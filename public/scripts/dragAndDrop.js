@@ -167,6 +167,183 @@ document.addEventListener('DOMContentLoaded', () => {
         attributesTable.querySelector('tbody').appendChild(row);
     }
 
+    function loadGridData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.addEventListener('change', event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const data = JSON.parse(e.target.result);
+                    console.log(data);
+                    populateGridFromJSON(data);
+                };
+                reader.readAsText(file);
+            }
+        });
+        input.click();
+    }
+    
+    function populateGridFromJSON(data) {
+        gridContainer.innerHTML = '';
+        data.forEach(item => {
+            const newElement = document.createElement('div');
+            newElement.classList.add('draggable');
+            newElement.id = item.id;
+            console.log(item.style);
+    
+            // Apply styles
+            Array.from(item.style).forEach(s => {
+                const [key, value] = s.split(':');
+                if (key && value) {
+                    newElement.style[key.trim()] = value.trim();
+                }
+            });
+    
+            const resizeHandle = document.createElement('div');
+            resizeHandle.classList.add('resize-handle');
+            newElement.appendChild(resizeHandle);
+    
+            const resizeRightBtn = document.createElement('button');
+            resizeRightBtn.textContent = '→';
+            resizeRightBtn.classList.add('resize-btn', 'resize-right');
+            newElement.appendChild(resizeRightBtn);
+    
+            const resizeDownBtn = document.createElement('button');
+            resizeDownBtn.textContent = '↓';
+            resizeDownBtn.classList.add('resize-btn', 'resize-down');
+            newElement.appendChild(resizeDownBtn);
+    
+            const resizeLeftBtn = document.createElement('button');
+            resizeLeftBtn.textContent = '←';
+            resizeLeftBtn.classList.add('resize-btn', 'resize-left');
+            newElement.appendChild(resizeLeftBtn);
+    
+            const resizeUpBtn = document.createElement('button');
+            resizeUpBtn.textContent = '↑';
+            resizeUpBtn.classList.add('resize-btn', 'resize-up');
+            newElement.appendChild(resizeUpBtn);
+    
+            const tagNameInput = document.createElement('input');
+            tagNameInput.type = 'text';
+            tagNameInput.placeholder = 'Tag Name';
+            tagNameInput.classList.add('tag-name-input');
+            tagNameInput.value = item.tagName;
+            newElement.appendChild(tagNameInput);
+    
+            const showAttributesBtn = document.createElement('button');
+            showAttributesBtn.textContent = 'Details...';
+            showAttributesBtn.classList.add('show-attributes-btn');
+            newElement.appendChild(showAttributesBtn);
+    
+            const attributesContainer = document.createElement('div');
+            attributesContainer.classList.add('attributes-container');
+            attributesContainer.style.display = 'none';
+            newElement.appendChild(attributesContainer);
+    
+            const attributesTable = document.createElement('table');
+            attributesTable.classList.add('attributes-table');
+            attributesTable.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Attribute</th>
+                        <th>Value</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+            attributesContainer.appendChild(attributesTable);
+    
+            showAttributesBtn.addEventListener('click', () => {
+                const tagName = tagNameInput.value.trim().toLowerCase();
+                if (tagName) {
+                    attributesContainer.style.display = 'block';
+                } else {
+                    alert('Please enter a tag name.');
+                }
+            });
+    
+            console.log(item);   
+            const acc = {};
+            for (let keys of Object.entries(item)) {
+                const [key, value] = keys;
+                if (key === 'style') {
+                    for (let style of Object.entries(value)) {
+                        console.log(style);
+                        const [styleKey, styleValue] = style;
+                        newElement.styleString += styleKey + ":" + styleValue + ";";
+                    }
+                    continue;
+                }
+                console.log(key, value);
+                acc[key] = value;
+            }
+    
+            for (const [key, value] of Object.entries(item)) {
+                const row = document.createElement('tr');
+    
+                const attributeCell = document.createElement('td');
+                const attributeSelect = document.createElement('select');
+                const attributesList = [
+                    'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 'mouse', 'event', 'options'
+                ];
+                if (key === 'style') {
+                    for (let style of Object.entries(value)) {
+                        console.log(style);
+                        const [styleKey, styleValue] = style;
+                        newElement.styleString += styleKey + ":" + styleValue + ";";
+                    }
+                    continue;
+                }
+                console.log(key, value);
+                attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
+                attributeSelect.value = key;
+                attributeCell.appendChild(attributeSelect);
+                row.appendChild(attributeCell);
+    
+                const valueCell = document.createElement('td');
+                const valueInput = document.createElement('input');
+                valueInput.type = 'text';
+                valueInput.value = value;
+                valueCell.appendChild(valueInput);
+                row.appendChild(valueCell);
+    
+                const lockCell = document.createElement('td');
+                const toggleLockBtn = document.createElement('button');
+                toggleLockBtn.textContent = '🔒';
+                toggleLockBtn.addEventListener('click', () => {
+                    const isLocked = toggleLockBtn.textContent === '🔒';
+                    toggleLockBtn.textContent = isLocked ? '🔓' : '🔒';
+                    attributeSelect.disabled = isLocked;
+                    valueInput.disabled = isLocked;
+                });
+                lockCell.appendChild(toggleLockBtn);
+                row.appendChild(lockCell);
+    
+                const removeCell = document.createElement('td');
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '🗑️';
+                removeBtn.addEventListener('click', () => {
+                    row.remove();
+                });
+                removeCell.appendChild(removeBtn);
+                row.appendChild(removeCell);
+    
+                attributesTable.querySelector('tbody').appendChild(row);
+            }
+    
+            gridContainer.appendChild(newElement);
+            newElement.addEventListener('mousedown', onDragStart);
+            resizeHandle.addEventListener('mousedown', onResizeStart);
+            resizeRightBtn.addEventListener('click', () => resizeElement(newElement, 'right'));
+            resizeDownBtn.addEventListener('click', () => resizeElement(newElement, 'down'));
+            resizeLeftBtn.addEventListener('click', () => resizeElement(newElement, 'left'));
+            resizeUpBtn.addEventListener('click', () => resizeElement(newElement, 'up'));
+        });
+    }
     function saveGridData() {
         const elements = Array.from(gridContainer.querySelectorAll('.draggable')).map(element => {
             const id = element.id;
@@ -201,36 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const json = JSON.stringify(elements, null, 2);
         downloadJson(json, 'grid-data.json');
     }
-    // function saveGridData() {
-    //     const elements = Array.from(gridContainer.querySelectorAll('.draggable')).map(element => {
-    //         const id = element.id;
-    //         const tagName = element.querySelector('.tag-name-input').value.trim().toLowerCase();
-    //         const attributesTable = element.querySelector('.attributes-table');
-    //         const attributesArray = Array.from(attributesTable.querySelectorAll('tbody tr')).map(row => {
-    //             const cells = row.querySelectorAll('td');
-    //             const attribute = cells[0].querySelector('select') ? cells[0].querySelector('select').value : cells[0].querySelector('input').value;
-    //             const value = cells[1].querySelector('input').value;
-    //             return { key: attribute, value: value };
-    //         });
-    
-    //         const attributesString = attributesArray.map(item => `${item.key}: ${item.value}`).join(', ');
-    
-    //         return {
-    //             id,
-    //             tagName,
-    //             attributes: attributesString, // Include attributes as a single string
-    //             style: {
-    //                 left: element.style.left,
-    //                 top: element.style.top,
-    //                 width: element.style.width,
-    //                 height: element.style.height
-    //             }
-    //         };
-    //     });
-    
-    //     const json = JSON.stringify(elements, null, 2);
-    //     downloadJson(json, 'grid-data.json');
-    // }
+
     function downloadJson(json, filename) {
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -397,99 +545,99 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function loadGridData() {
-        fetch('/loadJSON.php')
-        .then(response => response.json())
-        .then(data => {
-            gridContainer.innerHTML = '';
-            data.forEach(item => {
-                const newElement = document.createElement('div');
-                newElement.classList.add('draggable');
-                newElement.id = item.id;
-                newElement.style.left = `${item.left}px`;
-                newElement.style.top = `${item.top}px`;
-                newElement.style.width = `${item.width}px`;
-                newElement.style.height = `${item.height}px`;
+    // function loadGridData() {
+    //     fetch('/loadJSON.php')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         gridContainer.innerHTML = '';
+    //         data.forEach(item => {
+    //             const newElement = document.createElement('div');
+    //             newElement.classList.add('draggable');
+    //             newElement.id = item.id;
+    //             newElement.style.left = `${item.left}px`;
+    //             newElement.style.top = `${item.top}px`;
+    //             newElement.style.width = `${item.width}px`;
+    //             newElement.style.height = `${item.height}px`;
 
-                const resizeHandle = document.createElement('div');
-                resizeHandle.classList.add('resize-handle');
-                newElement.appendChild(resizeHandle);
+    //             const resizeHandle = document.createElement('div');
+    //             resizeHandle.classList.add('resize-handle');
+    //             newElement.appendChild(resizeHandle);
 
-                const resizeRightBtn = document.createElement('button');
-                resizeRightBtn.textContent = '→';
-                resizeRightBtn.classList.add('resize-btn', 'resize-right');
-                newElement.appendChild(resizeRightBtn);
+    //             const resizeRightBtn = document.createElement('button');
+    //             resizeRightBtn.textContent = '→';
+    //             resizeRightBtn.classList.add('resize-btn', 'resize-right');
+    //             newElement.appendChild(resizeRightBtn);
 
-                const resizeDownBtn = document.createElement('button');
-                resizeDownBtn.textContent = '↓';
-                resizeDownBtn.classList.add('resize-btn', 'resize-down');
-                newElement.appendChild(resizeDownBtn);
+    //             const resizeDownBtn = document.createElement('button');
+    //             resizeDownBtn.textContent = '↓';
+    //             resizeDownBtn.classList.add('resize-btn', 'resize-down');
+    //             newElement.appendChild(resizeDownBtn);
 
-                const resizeLeftBtn = document.createElement('button');
-                resizeLeftBtn.textContent = '←';
-                resizeLeftBtn.classList.add('resize-btn', 'resize-left');
-                newElement.appendChild(resizeLeftBtn);
+    //             const resizeLeftBtn = document.createElement('button');
+    //             resizeLeftBtn.textContent = '←';
+    //             resizeLeftBtn.classList.add('resize-btn', 'resize-left');
+    //             newElement.appendChild(resizeLeftBtn);
 
-                const resizeUpBtn = document.createElement('button');
-                resizeUpBtn.textContent = '↑';
-                resizeUpBtn.classList.add('resize-btn', 'resize-up');
-                newElement.appendChild(resizeUpBtn);
+    //             const resizeUpBtn = document.createElement('button');
+    //             resizeUpBtn.textContent = '↑';
+    //             resizeUpBtn.classList.add('resize-btn', 'resize-up');
+    //             newElement.appendChild(resizeUpBtn);
 
-                const tagNameInput = document.createElement('input');
-                tagNameInput.type = 'text';
-                tagNameInput.placeholder = 'Tag Name';
-                tagNameInput.classList.add('tag-name-input');
-                tagNameInput.value = item.tagName;
-                newElement.appendChild(tagNameInput);
+    //             const tagNameInput = document.createElement('input');
+    //             tagNameInput.type = 'text';
+    //             tagNameInput.placeholder = 'Tag Name';
+    //             tagNameInput.classList.add('tag-name-input');
+    //             tagNameInput.value = item.tagName;
+    //             newElement.appendChild(tagNameInput);
 
-                const showAttributesBtn = document.createElement('button');
-                showAttributesBtn.textContent = 'Details...';
-                showAttributesBtn.classList.add('show-attributes-btn');
-                newElement.appendChild(showAttributesBtn);
+    //             const showAttributesBtn = document.createElement('button');
+    //             showAttributesBtn.textContent = 'Details...';
+    //             showAttributesBtn.classList.add('show-attributes-btn');
+    //             newElement.appendChild(showAttributesBtn);
 
-                const attributesContainer = document.createElement('div');
-                attributesContainer.classList.add('attributes-container');
-                attributesContainer.style.display = 'none';
-                newElement.appendChild(attributesContainer);
+    //             const attributesContainer = document.createElement('div');
+    //             attributesContainer.classList.add('attributes-container');
+    //             attributesContainer.style.display = 'none';
+    //             newElement.appendChild(attributesContainer);
 
-                const attributesTable = document.createElement('table');
-                attributesTable.classList.add('attributes-table');
-                attributesTable.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Attribute</th>
-                            <th>Value</th>
-                            <th colspan="2">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                `;
-                attributesContainer.appendChild(attributesTable);
+    //             const attributesTable = document.createElement('table');
+    //             attributesTable.classList.add('attributes-table');
+    //             attributesTable.innerHTML = `
+    //                 <thead>
+    //                     <tr>
+    //                         <th>Attribute</th>
+    //                         <th>Value</th>
+    //                         <th colspan="2">Action</th>
+    //                     </tr>
+    //                 </thead>
+    //                 <tbody></tbody>
+    //             `;
+    //             attributesContainer.appendChild(attributesTable);
 
-                showAttributesBtn.addEventListener('click', () => {
-                    const tagName = tagNameInput.value.trim().toLowerCase();
-                    if (tagName) {
-                        attributesContainer.style.display = 'block';
-                    } else {
-                        alert('Please enter a tag name.');
-                    }
-                });
+    //             showAttributesBtn.addEventListener('click', () => {
+    //                 const tagName = tagNameInput.value.trim().toLowerCase();
+    //                 if (tagName) {
+    //                     attributesContainer.style.display = 'block';
+    //                 } else {
+    //                     alert('Please enter a tag name.');
+    //                 }
+    //             });
 
-                newElement.setAttribute('data-attributes', item.attributes);
+    //             newElement.setAttribute('data-attributes', item.attributes);
 
-                gridContainer.appendChild(newElement);
-                newElement.addEventListener('mousedown', onDragStart);
-                resizeHandle.addEventListener('mousedown', onResizeStart);
-                resizeRightBtn.addEventListener('click', () => resizeElement(newElement, 'right'));
-                resizeDownBtn.addEventListener('click', () => resizeElement(newElement, 'down'));
-                resizeLeftBtn.addEventListener('click', () => resizeElement(newElement, 'left'));
-                resizeUpBtn.addEventListener('click', () => resizeElement(newElement, 'up'));
-            });
-        })
-        .catch(error => {
-            console.error('Error loading grid data:', error);
-        });
-    }
+    //             gridContainer.appendChild(newElement);
+    //             newElement.addEventListener('mousedown', onDragStart);
+    //             resizeHandle.addEventListener('mousedown', onResizeStart);
+    //             resizeRightBtn.addEventListener('click', () => resizeElement(newElement, 'right'));
+    //             resizeDownBtn.addEventListener('click', () => resizeElement(newElement, 'down'));
+    //             resizeLeftBtn.addEventListener('click', () => resizeElement(newElement, 'left'));
+    //             resizeUpBtn.addEventListener('click', () => resizeElement(newElement, 'up'));
+    //         });
+    //     })
+    //     .catch(error => {
+    //         console.error('Error loading grid data:', error);
+    //     });
+    // }
 
     function previewGrid() {
         const previewWindow = window.open('', '_blank');
