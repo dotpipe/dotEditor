@@ -294,11 +294,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     for (let style of Object.entries(value)) {
                         console.log(style);
                         const [styleKey, styleValue] = style;
-                        newElement.styleString += styleKey + ":" + styleValue + ";";
+                        newElement.style += styleKey + ":" + styleValue + ";";
                     }
                     continue;
                 }
                 console.log(key, value);
+                if (key.toLowerCase() === 'tagname') {
+                    continue;
+                }
                 attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
                 attributeSelect.value = key;
                 attributeCell.appendChild(attributeSelect);
