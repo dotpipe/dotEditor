@@ -184,28 +184,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 return acc;
             }, {});
     
-            const attributesString = JSON.stringify(attributes);
-            const attributesStringWithoutQuotes = attributesString.replace(/"/g, '');
+            const attributesString = attributesArray.map(item => `${item.key}: ${item.value}`).join(', ');
     
-            const attrString = attributesArray.map((item, i) => `${item.key}: ${item.value}`);
-            const attributesNow = attributesString.replace(/: /g, '": "');
+            // Collect existing style attribute if it exists
+            const existingStyle = attributesString.style || '';
+            const styleString = `${existingStyle} left: ${element.style.left}; top: ${element.style.top}; width: ${element.style.width}; height: ${element.style.height};`.trim();
+    
             return {
                 id,
                 tagName,
-                ...attributes, // Include attributes as a string
-                style: {
-                    left: element.style.left,
-                    top: element.style.top,
-                    width: element.style.width,
-                    height: element.style.height
-                }
+                attributes: attributesString, // Include attributes as a single string
+                style: styleString // Include style as a single string
             };
         });
     
         const json = JSON.stringify(elements, null, 2);
         downloadJson(json, 'grid-data.json');
     }
-
+    // function saveGridData() {
+    //     const elements = Array.from(gridContainer.querySelectorAll('.draggable')).map(element => {
+    //         const id = element.id;
+    //         const tagName = element.querySelector('.tag-name-input').value.trim().toLowerCase();
+    //         const attributesTable = element.querySelector('.attributes-table');
+    //         const attributesArray = Array.from(attributesTable.querySelectorAll('tbody tr')).map(row => {
+    //             const cells = row.querySelectorAll('td');
+    //             const attribute = cells[0].querySelector('select') ? cells[0].querySelector('select').value : cells[0].querySelector('input').value;
+    //             const value = cells[1].querySelector('input').value;
+    //             return { key: attribute, value: value };
+    //         });
+    
+    //         const attributesString = attributesArray.map(item => `${item.key}: ${item.value}`).join(', ');
+    
+    //         return {
+    //             id,
+    //             tagName,
+    //             attributes: attributesString, // Include attributes as a single string
+    //             style: {
+    //                 left: element.style.left,
+    //                 top: element.style.top,
+    //                 width: element.style.width,
+    //                 height: element.style.height
+    //             }
+    //         };
+    //     });
+    
+    //     const json = JSON.stringify(elements, null, 2);
+    //     downloadJson(json, 'grid-data.json');
+    // }
     function downloadJson(json, filename) {
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
