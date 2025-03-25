@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elementCount++;
         const newElement = document.createElement('div');
         newElement.classList.add('draggable');
+        newElement.id = `draggable${elementCount}`;
         newElement.style.left = '0px';
         newElement.style.top = '0px';
         newElement.style.width = '100px';
@@ -74,18 +75,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             </thead>
             <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <button class="add-attribute-btn">+</button>
+                        <button class="add-custom-attribute-btn">Custom</button>
+                    </td>
+                </tr>
+            </tfoot>
         `;
         attributesContainer.appendChild(attributesTable);
 
-        // Add the '+' and 'Custom' buttons
-        addAttributeButtons(attributesContainer, attributesTable);
+        attributesTable.querySelector('.add-attribute-btn').addEventListener('click', () => addAttributeRow(attributesTable));
+        attributesTable.querySelector('.add-custom-attribute-btn').addEventListener('click', () => addAttributeRow(attributesTable, true));
 
         showAttributesBtn.addEventListener('click', () => {
             const tagName = tagNameInput.value.trim().toLowerCase();
             if (tagName) {
-                // Toggle the visibility of the attributes container
-                if (attributesContainer.style.display === 'none' || attributesContainer.style.display === '') {
+                if (attributesContainer.style.display === 'none') {
                     attributesContainer.style.display = 'block';
+                    if (attributesTable.querySelector('tbody').children.length === 0) {
+                        addAttributeRow(attributesTable);
+                    }
                 } else {
                     attributesContainer.style.display = 'none';
                 }
@@ -103,42 +114,31 @@ document.addEventListener('DOMContentLoaded', () => {
         resizeUpBtn.addEventListener('click', () => resizeElement(newElement, 'up'));
     }
 
-    function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
+    function addAttributeRow(attributesTable, isCustom = false) {
         const row = document.createElement('tr');
-    
+
         const attributeCell = document.createElement('td');
         if (isCustom) {
-            // Create a text input for custom attributes
             const customAttributeInput = document.createElement('input');
             customAttributeInput.type = 'text';
-            customAttributeInput.placeholder = 'Custom Attribute';
-            customAttributeInput.value = key;
+            customAttributeInput.placeholder = 'Custom...';
             attributeCell.appendChild(customAttributeInput);
         } else {
-            // Create a dropdown for predefined attributes
             const attributeSelect = document.createElement('select');
-            const attributesList = [
-                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 
-                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 
-                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 
-                'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 
-                'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 
-                'mouse', 'event', 'options'
+            const attributes = [
+                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 'mouse', 'event', 'options'
             ];
-            attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
-            attributeSelect.value = key;
+            attributeSelect.innerHTML = attributes.map(attr => `<option value="${attr}">${attr}</option>`).join('');
             attributeCell.appendChild(attributeSelect);
         }
         row.appendChild(attributeCell);
-    
+
         const valueCell = document.createElement('td');
         const valueInput = document.createElement('input');
         valueInput.type = 'text';
-        valueInput.placeholder = 'Value';
-        valueInput.value = value;
         valueCell.appendChild(valueInput);
         row.appendChild(valueCell);
-    
+
         const lockCell = document.createElement('td');
         const toggleLockBtn = document.createElement('button');
         toggleLockBtn.textContent = '🔒';
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         lockCell.appendChild(toggleLockBtn);
         row.appendChild(lockCell);
-    
+
         const removeCell = document.createElement('td');
         const removeBtn = document.createElement('button');
         removeBtn.textContent = '🗑️';
@@ -163,27 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         removeCell.appendChild(removeBtn);
         row.appendChild(removeCell);
-    
+
         attributesTable.querySelector('tbody').appendChild(row);
-    }
-    
-    function addAttributeButtons(attributesContainer, attributesTable) {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('attribute-buttons');
-    
-        // Add the '+' button
-        const addAttributeBtn = document.createElement('button');
-        addAttributeBtn.textContent = '+';
-        addAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, false));
-        buttonContainer.appendChild(addAttributeBtn);
-    
-        // Add the 'Custom' button
-        const addCustomAttributeBtn = document.createElement('button');
-        addCustomAttributeBtn.textContent = 'Custom';
-        addCustomAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, true));
-        buttonContainer.appendChild(addCustomAttributeBtn);
-    
-        attributesContainer.appendChild(buttonContainer);
     }
 
     function loadGridData() {
@@ -204,152 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         input.click();
     }
-    function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
-        const row = document.createElement('tr');
-    
-        const attributeCell = document.createElement('td');
-        if (isCustom) {
-            // Create a text input for custom attributes
-            const customAttributeInput = document.createElement('input');
-            customAttributeInput.type = 'text';
-            customAttributeInput.placeholder = 'Custom Attribute';
-            customAttributeInput.value = key;
-            attributeCell.appendChild(customAttributeInput);
-        } else {
-            // Create a dropdown for predefined attributes
-            const attributeSelect = document.createElement('select');
-            const attributesList = [
-                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 
-                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 
-                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'disabled', 
-                'br', 'js', 'css', 'modal', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 'node',
-                'file-order', 'file-index', 'interval', 'mode', 'remove', 'display', 'headers', 'form-class', 
-                'mouse', 'event', 'options'
-            ];
-            attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
-            attributeSelect.value = key;
-            attributeCell.appendChild(attributeSelect);
-        }
-        row.appendChild(attributeCell);
-    
-        const valueCell = document.createElement('td');
-        const valueInput = document.createElement('input');
-        valueInput.type = 'text';
-        valueInput.placeholder = 'Value';
-        valueInput.value = value;
-        valueCell.appendChild(valueInput);
-        row.appendChild(valueCell);
-    
-        const lockCell = document.createElement('td');
-        const toggleLockBtn = document.createElement('button');
-        toggleLockBtn.textContent = '🔒';
-        toggleLockBtn.addEventListener('click', () => {
-            const isLocked = toggleLockBtn.textContent === '🔒';
-            toggleLockBtn.textContent = isLocked ? '🔓' : '🔒';
-            if (isCustom) {
-                attributeCell.querySelector('input').disabled = isLocked;
-            } else {
-                attributeCell.querySelector('select').disabled = isLocked;
-            }
-            valueInput.disabled = isLocked;
-        });
-        lockCell.appendChild(toggleLockBtn);
-        row.appendChild(lockCell);
-    
-        const removeCell = document.createElement('td');
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '🗑️';
-        removeBtn.addEventListener('click', () => {
-            row.remove();
-        });
-        removeCell.appendChild(removeBtn);
-        row.appendChild(removeCell);
-    
-        attributesTable.querySelector('tbody').appendChild(row);
-    }
-    
-    function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
-        const row = document.createElement('tr');
-    
-        const attributeCell = document.createElement('td');
-        if (isCustom) {
-            // Create a text input for custom attributes
-            const customAttributeInput = document.createElement('input');
-            customAttributeInput.type = 'text';
-            customAttributeInput.placeholder = 'Custom Attribute';
-            customAttributeInput.value = key;
-            attributeCell.appendChild(customAttributeInput);
-        } else {
-            // Create a dropdown for predefined attributes
-            const attributeSelect = document.createElement('select');
-            const attributesList = [
-                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 
-                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 
-                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 
-                'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 
-                'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 
-                'mouse', 'event', 'options'
-            ];
-            attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
-            attributeSelect.value = key;
-            attributeCell.appendChild(attributeSelect);
-        }
-        row.appendChild(attributeCell);
-    
-        const valueCell = document.createElement('td');
-        const valueInput = document.createElement('input');
-        valueInput.type = 'text';
-        valueInput.placeholder = 'Value';
-        valueInput.value = value;
-        valueCell.appendChild(valueInput);
-        row.appendChild(valueCell);
-    
-        const lockCell = document.createElement('td');
-        const toggleLockBtn = document.createElement('button');
-        toggleLockBtn.textContent = '🔒';
-        toggleLockBtn.addEventListener('click', () => {
-            const isLocked = toggleLockBtn.textContent === '🔒';
-            toggleLockBtn.textContent = isLocked ? '🔓' : '🔒';
-            if (isCustom) {
-                attributeCell.querySelector('input').disabled = isLocked;
-            } else {
-                attributeCell.querySelector('select').disabled = isLocked;
-            }
-            valueInput.disabled = isLocked;
-        });
-        lockCell.appendChild(toggleLockBtn);
-        row.appendChild(lockCell);
-    
-        const removeCell = document.createElement('td');
-        const removeBtn = document.createElement('button');
-        removeBtn.textContent = '🗑️';
-        removeBtn.addEventListener('click', () => {
-            row.remove();
-        });
-        removeCell.appendChild(removeBtn);
-        row.appendChild(removeCell);
-    
-        attributesTable.querySelector('tbody').appendChild(row);
-    }
-    
-    function addAttributeButtons(attributesContainer, attributesTable) {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('attribute-buttons');
-    
-        // Add the '+' button
-        const addAttributeBtn = document.createElement('button');
-        addAttributeBtn.textContent = '+';
-        addAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, false));
-        buttonContainer.appendChild(addAttributeBtn);
-    
-        // Add the 'Custom' button
-        const addCustomAttributeBtn = document.createElement('button');
-        addCustomAttributeBtn.textContent = 'Custom';
-        addCustomAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, true));
-        buttonContainer.appendChild(addCustomAttributeBtn);
-    
-        attributesContainer.appendChild(buttonContainer);
-    }
 
     function populateGridFromJSON(data) {
         gridContainer.innerHTML = '';
@@ -357,12 +192,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const newElement = document.createElement('div');
             newElement.classList.add('draggable');
             newElement.id = item.id;
-
+            console.log(item);
+            newElement.style.cssText = item.style;
+            // newElement.style.left = `${item.left}px`;
+            // newElement.style.top = `${item.top}px`;
+            // newElement.style.width = `${item.width}px`;
+            // newElement.style.height = `${item.height}px`;
             // Apply styles
-            newElement.style.left = item.left;
-            newElement.style.top = item.top;
-            newElement.style.width = item.width;
-            newElement.style.height = item.height;
+            // newElement.style.left = item.left;
+            // newElement.style.top = item.top;
+            // newElement.style.width = item.width;
+            // newElement.style.height = item.height;
 
             const resizeHandle = document.createElement('div');
             resizeHandle.classList.add('resize-handle');
@@ -419,34 +259,29 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             attributesContainer.appendChild(attributesTable);
 
-            // Add the '+' and 'Custom' buttons
-            addAttributeButtons(attributesContainer, attributesTable);
+            const addAttributeBtn = document.createElement('button');
+            addAttributeBtn.textContent = '+';
+            addAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, true));
+            attributesContainer.appendChild(addAttributeBtn);
 
             showAttributesBtn.addEventListener('click', () => {
                 const tagName = tagNameInput.value.trim().toLowerCase();
                 if (tagName) {
-                    // Toggle the visibility of the attributes container
-                    if (attributesContainer.style.display === 'none' || attributesContainer.style.display === '') {
-                        attributesContainer.style.display = 'block';
-                    } else {
-                        attributesContainer.style.display = 'none';
-                    }
+                    attributesContainer.style.display = 'block';
                 } else {
                     alert('Please enter a tag name.');
                 }
             });
 
-            // Add id attribute first
-            if (item.id) {
-                addAttributeRow(attributesTable, false, 'id', item.id);
-            }
+            const attributes = item.attributes.split(', ').reduce((acc, attr) => {
+                const [key, value] = attr.split(': ');
+                acc[key] = value;
+                return acc;
+            }, {});
 
-            // Add other attributes
-            Object.keys(item).forEach(key => {
-                if (key !== 'id' && key !== 'tagName' && key !== 'left' && key !== 'top' && key !== 'width' && key !== 'height') {
-                    addAttributeRow(attributesTable, !attributesList.includes(key), key, item[key]);
-                }
-            });
+            for (const [key, value] of Object.entries(attributes)) {
+                addAttributeRow(attributesTable, false, key, value);
+            }
 
             gridContainer.appendChild(newElement);
             newElement.addEventListener('mousedown', onDragStart);
@@ -456,6 +291,61 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeLeftBtn.addEventListener('click', () => resizeElement(newElement, 'left'));
             resizeUpBtn.addEventListener('click', () => resizeElement(newElement, 'up'));
         });
+    }
+
+    function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
+        const row = document.createElement('tr');
+
+        const attributeCell = document.createElement('td');
+        if (isCustom) {
+            const attributeInput = document.createElement('input');
+            attributeInput.type = 'text';
+            attributeInput.value = key;
+            attributeCell.appendChild(attributeInput);
+        } else {
+            const attributeSelect = document.createElement('select');
+            const attributesList = [
+                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 'mouse', 'event', 'options'
+            ];
+            attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
+            attributeSelect.value = key;
+            attributeCell.appendChild(attributeSelect);
+        }
+        row.appendChild(attributeCell);
+
+        const valueCell = document.createElement('td');
+        const valueInput = document.createElement('input');
+        valueInput.type = 'text';
+        valueInput.value = value;
+        valueCell.appendChild(valueInput);
+        row.appendChild(valueCell);
+
+        const lockCell = document.createElement('td');
+        const toggleLockBtn = document.createElement('button');
+        toggleLockBtn.textContent = '🔒';
+        toggleLockBtn.addEventListener('click', () => {
+            const isLocked = toggleLockBtn.textContent === '🔒';
+            toggleLockBtn.textContent = isLocked ? '🔓' : '🔒';
+            if (isCustom) {
+                attributeCell.querySelector('input').disabled = isLocked;
+            } else {
+                attributeCell.querySelector('select').disabled = isLocked;
+            }
+            valueInput.disabled = isLocked;
+        });
+        lockCell.appendChild(toggleLockBtn);
+        row.appendChild(lockCell);
+
+        const removeCell = document.createElement('td');
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = '🗑️';
+        removeBtn.addEventListener('click', () => {
+            row.remove();
+        });
+        removeCell.appendChild(removeBtn);
+        row.appendChild(removeCell);
+
+        attributesTable.querySelector('tbody').appendChild(row);
     }
 
     function saveGridData() {
@@ -475,14 +365,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return acc;
             }, {});
 
+            const attributesString = attributesArray.map(item => `${item.key}: ${item.value}`).join(', ');
+
+            // Collect existing style attribute if it exists
+            const existingStyle = attributesString.style || '';
+            const styleString = `${existingStyle} left: ${element.style.left}; top: ${element.style.top}; width: ${element.style.width}; height: ${element.style.height};`.trim();
+
             return {
                 id,
                 tagName,
-                left: element.style.left,
-                top: element.style.top,
-                width: element.style.width,
-                height: element.style.height,
-                ...attributes // Spread attributes directly into the object
+                attributes: attributesString, // Include attributes as a single string
+                style: styleString // Include style as a single string
             };
         });
 
@@ -500,6 +393,42 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    function showAttributesModal(tagName, id, attributesTable) {
+        const attributesTableContent = document.createElement('div');
+        attributesTableContent.classList.add('attributes-table-content');
+
+        const saveAttributesBtn = document.createElement('button');
+        saveAttributesBtn.textContent = 'Save Attributes';
+        saveAttributesBtn.classList.add('save-attributes-btn');
+        saveAttributesBtn.addEventListener('click', () => {
+            const selectedAttributes = Array.from(attributesTable.querySelectorAll('tbody tr')).reduce((acc, row) => {
+                const cells = row.querySelectorAll('td');
+                const attribute = cells[0].querySelector('select') ? cells[0].querySelector('select').value : cells[0].querySelector('input').value;
+                const value = cells[1].querySelector('input').value;
+                if (attribute && value) {
+                    acc[attribute] = value;
+                }
+                return acc;
+            }, {});
+            attributesTable.setAttribute('data-attributes', JSON.stringify(selectedAttributes));
+            attributesTable.parentElement.style.display = 'none';
+        });
+        attributesTableContent.appendChild(saveAttributesBtn);
+
+        const loadAttributesBtn = document.createElement('button');
+        loadAttributesBtn.textContent = 'Load Attributes';
+        loadAttributesBtn.classList.add('load-attributes-btn');
+        loadAttributesBtn.addEventListener('click', () => {
+            // Implement load functionality here
+        });
+        attributesTableContent.appendChild(loadAttributesBtn);
+
+        attributesTable.parentElement.appendChild(attributesTableContent);
+
+        // Add the first attribute row by default
+        addAttributeRow(attributesTable);
     }
 
     function onDragStart(event) {
@@ -628,8 +557,4 @@ document.addEventListener('DOMContentLoaded', () => {
         previewDocument.write('</body></html>');
         previewDocument.close();
     }
-
-    const attributesList = [
-        'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 'mouse', 'event', 'options'
-    ];
 });
