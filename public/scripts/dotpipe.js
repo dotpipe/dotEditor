@@ -223,6 +223,15 @@ function sha256(message) {
             .join('');
     });
 }
+function sha256(message) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    return crypto.subtle.digest('SHA-256', data).then(hash => {
+        return Array.from(new Uint8Array(hash))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    });
+}
 
 // Usage example to generate a nonce
 function generateNonce() {
