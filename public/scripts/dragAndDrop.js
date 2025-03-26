@@ -22,47 +22,47 @@ document.addEventListener('DOMContentLoaded', () => {
         newElement.style.top = '0px';
         newElement.style.width = '100px';
         newElement.style.height = '100px';
-
+    
         const resizeHandle = document.createElement('div');
         resizeHandle.classList.add('resize-handle');
         newElement.appendChild(resizeHandle);
-
+    
         const resizeRightBtn = document.createElement('button');
         resizeRightBtn.textContent = '→';
         resizeRightBtn.classList.add('resize-btn', 'resize-right');
         newElement.appendChild(resizeRightBtn);
-
+    
         const resizeDownBtn = document.createElement('button');
         resizeDownBtn.textContent = '↓';
         resizeDownBtn.classList.add('resize-btn', 'resize-down');
         newElement.appendChild(resizeDownBtn);
-
+    
         const resizeLeftBtn = document.createElement('button');
         resizeLeftBtn.textContent = '←';
         resizeLeftBtn.classList.add('resize-btn', 'resize-left');
         newElement.appendChild(resizeLeftBtn);
-
+    
         const resizeUpBtn = document.createElement('button');
         resizeUpBtn.textContent = '↑';
         resizeUpBtn.classList.add('resize-btn', 'resize-up');
         newElement.appendChild(resizeUpBtn);
-
+    
         const tagNameInput = document.createElement('input');
         tagNameInput.type = 'text';
         tagNameInput.placeholder = 'Tag Name';
         tagNameInput.classList.add('tag-name-input');
         newElement.appendChild(tagNameInput);
-
+    
         const showAttributesBtn = document.createElement('button');
         showAttributesBtn.textContent = 'Details...';
         showAttributesBtn.classList.add('show-attributes-btn');
         newElement.appendChild(showAttributesBtn);
-
+    
         const attributesContainer = document.createElement('div');
         attributesContainer.classList.add('attributes-container');
-        attributesContainer.style.display = 'none';
+        attributesContainer.style.display = 'none'; // Initially hidden
         newElement.appendChild(attributesContainer);
-
+    
         const attributesTable = document.createElement('table');
         attributesTable.classList.add('attributes-table');
         attributesTable.innerHTML = `
@@ -76,37 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
             <tbody></tbody>
         `;
         attributesContainer.appendChild(attributesTable);
-
+    
         // Add the '+' and 'Custom' buttons
         addAttributeButtons(attributesContainer, attributesTable);
-
-        // showAttributesBtn.addEventListener('click', () => {
-        //     const tagName = newElement;
-        //     console.log('Tag Name:', tagName);
-        //     if (tagName) {
-        //         // Bring the parent box to the top
-        //         bringToFront(newElement);
-            //     console.log('Tag Name:', tagName);
-            //     // Toggle the visibility of the attributes container
-            //     if (attributesContainer.style.display === 'none' || attributesContainer.style.display === '') {
-            //         attributesContainer.style.display = 'block';
-            //         attributesContainer.style.zIndex = 3000; // Ensure the attributes container is on top
-        
-            //         // Position the attributes container relative to the parent element
-            //         const rect = newElement.getBoundingClientRect();
-            //         attributesContainer.style.left = `${rect.right + 10}px`; // Position to the right of the element
-            //         attributesContainer.style.top = `${rect.top}px`; // Align vertically with the element
-            //     } else {
-            //         attributesContainer.style.display = 'none';
-            //     }
-            // } else {
-            //     alert('Please enter a tag name.');
-            // }
-        // });
-        
-
+    
+        // Toggle the visibility of the attributes container
+        showAttributesBtn.addEventListener('click', () => {
+            if (attributesContainer.style.display === 'none' || attributesContainer.style.display === '') {
+                attributesContainer.style.display = 'block'; // Show the container
+            } else {
+                attributesContainer.style.display = 'none'; // Hide the container
+            }
+        });
+    
         gridContainer.appendChild(newElement);
-        newElement.addEventListener('mousedown', () => onDragStart);
+    
+        // Attach event listeners for dragging and resizing
+        newElement.addEventListener('mousedown', onDragStart);
         newElement.addEventListener('click', () => bringToFront(newElement));
         resizeRightBtn.addEventListener('click', () => resizeElement(newElement, 'right'));
         resizeDownBtn.addEventListener('click', () => resizeElement(newElement, 'down'));

@@ -29,8 +29,8 @@
   },
   {
     "id": "navLeftLogin",
-    "tagName": "p",
-    "left": "0px",
+    "tagName": "h1",
+    "left": "100px",
     "top": "100px",
     "width": "308px",
     "height": "100px",
@@ -40,8 +40,8 @@
   },
   {
     "id": "navLeftHighlights",
-    "tagName": "p",
-    "left": "0px",
+    "tagName": "h1",
+    "left": "100px",
     "top": "200px",
     "width": "308px",
     "height": "100px",
@@ -51,8 +51,8 @@
   },
   {
     "id": "navLeftPortfolio",
-    "tagName": "p",
-    "left": "0px",
+    "tagName": "h1",
+    "left": "100px",
     "top": "300px",
     "width": "308px",
     "height": "100px",
@@ -112,8 +112,8 @@
   },
   {
     "id": "navRightProfile",
-    "tagName": "p",
-    "left": "1200px",
+    "tagName": "h1",
+    "left": "1300px",
     "top": "200px",
     "width": "308px",
     "height": "100px",
@@ -123,19 +123,19 @@
   },
   {
     "id": "navRightWired",
-    "tagName": "p",
-    "left": "1200px",
+    "tagName": "h1",
+    "left": "1300px",
     "top": "300px",
     "width": "308px",
     "height": "100px",
     "textContent": "Wired",
-    "ajax": "wired.php:middleBody.php:1",
+    "ajax": "wired.php:middleBody:1",
     "class": "nav-right"
   },
   {
     "id": "navRightCTF",
-    "tagName": "p",
-    "left": "1200px",
+    "tagName": "h1",
+    "left": "1300px",
     "top": "400px",
     "width": "308px",
     "height": "100px",
@@ -163,5 +163,59 @@
     "form-class": "conversation",
     "ajax": "comment.php",
     "textContent": "Submit"
+  },
+  {
+    "id": "loginPNG",
+    "tagName": "img",
+    "left": "0px",
+    "top": "100px",
+    "width": "100px",
+    "height": "100px",
+    "src": "key10.png"
+  },
+  {
+    "id": "portfolio",
+    "tagName": "h1",
+    "left": "0px",
+    "top": "300px",
+    "width": "100px",
+    "height": "100px",
+    "innerHTML": "📈"
+  },
+  {
+    "id": "highlightsSVG",
+    "tagName": "img",
+    "left": "0px",
+    "top": "200px",
+    "width": "100px",
+    "height": "100px",
+    "src": "dashboard.svg"
+  },
+  {
+    "id": "bioEdit",
+    "tagName": "h1",
+    "left": "1200px",
+    "top": "200px",
+    "width": "100px",
+    "height": "100px",
+    "textContext": "P"
+  },
+  {
+    "id": "wired",
+    "tagName": "h1",
+    "left": "1200px",
+    "top": "300px",
+    "width": "100px",
+    "height": "100px",
+    "textContent": "A"
+  },
+  {
+    "id": "game",
+    "tagName": "h1",
+    "left": "1200px",
+    "top": "400px",
+    "width": "100px",
+    "height": "100px",
+    "innerHTML": "♕"
   }
 ]

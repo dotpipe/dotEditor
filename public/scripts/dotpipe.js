@@ -72,7 +72,7 @@
   **** go on if there is no input to replace them.
   */
 
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     try {
         if (document.body != null && JSON.parse(document.body.textContent)) {
             const irc = JSON.parse(document.body.textContent);
@@ -638,19 +638,19 @@ function modala(value, tempTag, root, id) {
         else if (v.toLowerCase() == "input") {
             // Set input-specific attributes
             temp.appendChild(document.createElement("input"));
-        }
-        else if (k.toLowerCase() == "type" && temp.tagName.toLowerCase() == "input") {
-            temp.setAttribute("type", v);
-        }
-        else if (k.toLowerCase() == "placeholder" && temp.tagName.toLowerCase() == "input") {
-            temp.setAttribute("placeholder", v);
-        }
-        else if (v.toLowerCase() == "textarea") {
-            // Set textarea-specific attributes
-            temp.appendChild(document.createElement("textarea"));
-        }
-        else if (k.toLowerCase() == "placeholder" && temp.tagName.toLowerCase() == "textarea") {
-            temp.setAttribute("placeholder", v);
+            if (k.toLowerCase() == "type" && temp.tagName.toLowerCase() == "input") {
+                temp.setAttribute("type", v);
+            }
+            else if (k.toLowerCase() == "placeholder" && temp.tagName.toLowerCase() == "input") {
+                temp.setAttribute("placeholder", v);
+            }
+            else if (v.toLowerCase() == "textarea") {
+                // Set textarea-specific attributes
+                temp.appendChild(document.createElement("textarea"));
+            }
+            else if (k.toLowerCase() == "placeholder" && temp.tagName.toLowerCase() == "textarea") {
+                temp.setAttribute("placeholder", v);
+            }
         }
         else if (k.toLowerCase() == "select") {
             var select = document.createElement("select");
@@ -1305,20 +1305,6 @@ function pipes(elem, stop = false) {
         carousel(elem, auto);
         return;
     }
-    if (elem.classList.contains("ajax-limit")) {
-        var parts = elem.getAttribute("ajax").split(";");
-        parts.forEach((part) => {
-            var [file, target, limit] = part.split(":");
-            var clone = elem.cloneNode(true);
-            clone.setAttribute("ajax", file);
-            clone.setAttribute("insert", target);
-            if (limit) {
-                clone.setAttribute("boxes", limit);
-            }
-            navigate(clone, headers, query, formclass);
-        });
-        return;
-    }
     // This is a quick way to make a downloadable link in an href
     //     else
     if (elem.classList.contains("download")) {
@@ -1333,9 +1319,20 @@ function pipes(elem, stop = false) {
         document.body.removeChild(element);
         return;
     }
-    if (elem.hasAttribute("ajax"))
-        navigate(elem, headers, query, formclass);
-    else if (elem.hasAttribute("modal")) {
+    if (elem.hasAttribute("ajax")) {
+        var parts = elem.getAttribute("ajax").split(";");
+        parts.forEach((part) => {
+            var [file, target, limit] = part.split(":");
+            var clone = elem.cloneNode(true);
+            clone.setAttribute("ajax", file);
+            clone.setAttribute("insert", target);
+            if (limit) {
+                clone.setAttribute("boxes", limit);
+            }
+            navigate(clone, headers, query, formclass);
+        });
+    }
+    if (elem.hasAttribute("modal")) {
         modalList(elem.getAttribute("modal"));
     }
 }
