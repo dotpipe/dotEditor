@@ -573,11 +573,16 @@ function modala(value, tempTag, root, id) {
         return;
     }
 
-    var temp = document.createElement(value["tagname"]);
-    if (value["tagname"] == "undefined") {
-        temp.tagName = "div";
-        temp = document.createElement("div");
-    }
+    // Create the element
+    var temp = document.createElement(value["tagname"] || "div");
+
+    // Apply grid placement styles if specified
+    if (value["left"] !== undefined) temp.style.left = value["left"];
+    if (value["top"] !== undefined) temp.style.top = value["top"];
+    if (value["width"] !== undefined) temp.style.width = value["width"];
+    if (value["height"] !== undefined) temp.style.height = value["height"];
+    if (value["zIndex"] !== undefined) temp.style.zIndex = value["zIndex"];
+    temp.style.position = "absolute"; // Ensure the element is positioned absolutely
     if (value["header"] !== undefined && value["header"] instanceof Object) {
 
         modalaHead(value["header"], "head", root, null);
