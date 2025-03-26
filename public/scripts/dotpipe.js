@@ -72,7 +72,7 @@
   **** go on if there is no input to replace them.
   */
 
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     try {
         if (document.body != null && JSON.parse(document.body.textContent)) {
             const irc = JSON.parse(document.body.textContent);
@@ -574,7 +574,7 @@ function modala(value, tempTag, root, id) {
     }
 
     // Create the element
-    var temp = document.createElement(value["tagname"] || "div");
+    var temp = document.createElement(value["tagname"]);
 
     // Apply grid placement styles if specified
     if (value["left"] !== undefined) temp.style.left = value["left"];
@@ -591,6 +591,18 @@ function modala(value, tempTag, root, id) {
         meta.httpEquiv = "Content-Security-Policy";
         document.head.appendChild(meta);
     }
+    // Handle specific tag types
+    if (value["tagname"] == "input") {
+        // Set input-specific attributes
+        if (value["type"] !== undefined) temp.setAttribute("type", value["type"]);
+        if (value["placeholder"] !== undefined) temp.setAttribute("placeholder", value["placeholder"]);
+        if (value["value"] !== undefined) temp.setAttribute("value", value["value"]);
+    } else if (value["tagname"] == "textarea") {
+        // Set textarea-specific attributes
+        if (value["placeholder"] !== undefined) temp.setAttribute("placeholder", value["placeholder"]);
+        if (value["value"] !== undefined) temp.value = value["value"];
+    }
+
     Object.entries(value).forEach((nest) => {
         const [k, v] = nest;
         if (k.toLowerCase() == "header");
@@ -616,14 +628,29 @@ function modala(value, tempTag, root, id) {
         }
         else if (v instanceof Object)
             modala(v, tempTag, root, id);
-        else if (v instanceof Object)
-            modala(v, tempTag, root, id);
         else if (k.toLowerCase() == "br") {
             let brs = v;
             while (brs) {
                 temp.appendChild(document.createElement("br"));
                 brs--;
             }
+        }
+        else if (v.toLowerCase() == "input") {
+            // Set input-specific attributes
+            temp.appendChild(document.createElement("input"));
+        }
+        else if (k.toLowerCase() == "type" && temp.tagName.toLowerCase() == "input") {
+            temp.setAttribute("type", v);
+        }
+        else if (k.toLowerCase() == "placeholder" && temp.tagName.toLowerCase() == "input") {
+            temp.setAttribute("placeholder", v);
+        }
+        else if (v.toLowerCase() == "textarea") {
+            // Set textarea-specific attributes
+            temp.appendChild(document.createElement("textarea"));
+        }
+        else if (k.toLowerCase() == "placeholder" && temp.tagName.toLowerCase() == "textarea") {
+            temp.setAttribute("placeholder", v);
         }
         else if (k.toLowerCase() == "select") {
             var select = document.createElement("select");
@@ -772,7 +799,7 @@ function modala(value, tempTag, root, id) {
     domContentLoad();
 
     // Save the grid data to the database
-    saveGridData(value);
+    // saveGridData(value);
 
     return tempTag;
 }
