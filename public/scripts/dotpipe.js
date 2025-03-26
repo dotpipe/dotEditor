@@ -72,7 +72,7 @@
   **** go on if there is no input to replace them.
   */
 
-document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () {
     try {
         if (document.body != null && JSON.parse(document.body.textContent)) {
             const irc = JSON.parse(document.body.textContent);
@@ -574,7 +574,7 @@ function modala(value, tempTag, root, id) {
     }
 
     // Create the element
-    var temp = document.createElement(value["tagname"]);
+    var temp = document.createElement(value["tagName"]);
 
     // Apply grid placement styles if specified
     if (value["left"] !== undefined) temp.style.left = value["left"];
@@ -592,12 +592,12 @@ function modala(value, tempTag, root, id) {
         document.head.appendChild(meta);
     }
     // Handle specific tag types
-    if (value["tagname"] == "input") {
+    if (value["tagName"] == "input") {
         // Set input-specific attributes
         if (value["type"] !== undefined) temp.setAttribute("type", value["type"]);
         if (value["placeholder"] !== undefined) temp.setAttribute("placeholder", value["placeholder"]);
         if (value["value"] !== undefined) temp.setAttribute("value", value["value"]);
-    } else if (value["tagname"] == "textarea") {
+    } else if (value["tagName"] == "textarea") {
         // Set textarea-specific attributes
         if (value["placeholder"] !== undefined) temp.setAttribute("placeholder", value["placeholder"]);
         if (value["value"] !== undefined) temp.value = value["value"];

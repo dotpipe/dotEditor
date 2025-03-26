@@ -1,6 +1,6 @@
 <?php
 
-$sample = file_get_contents("./sample.json");
+$sample = file_get_contents("./grid-data.json");
 
 ?>
 <body>

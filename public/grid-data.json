@@ -1,0 +1,167 @@
+[
+  {
+    "id": "magic-logo",
+    "tagName": "img",
+    "left": "0px",
+    "top": "0px",
+    "width": "100px",
+    "height": "100px",
+    "src": "logo.jpg",
+    "class": "clear-node",
+    "node": "middleBody"
+  },
+  {
+    "id": "middleSearchHeader",
+    "tagName": "div",
+    "left": "400px",
+    "top": "0px",
+    "width": "724px",
+    "height": "100px"
+  },
+  {
+    "id": "",
+    "tagName": "h1",
+    "left": "100px",
+    "top": "0px",
+    "width": "308px",
+    "height": "100px",
+    "innerText": "TickinStocks"
+  },
+  {
+    "id": "navLeftLogin",
+    "tagName": "p",
+    "left": "0px",
+    "top": "100px",
+    "width": "308px",
+    "height": "100px",
+    "textContent": "Login",
+    "class": "navButton",
+    "ajax": "login.php:middleBody:1;"
+  },
+  {
+    "id": "navLeftHighlights",
+    "tagName": "p",
+    "left": "0px",
+    "top": "200px",
+    "width": "308px",
+    "height": "100px",
+    "textContent": "Highlights",
+    "class": "navButton",
+    "ajax": "highlights.php:middleBody:1;"
+  },
+  {
+    "id": "navLeftPortfolio",
+    "tagName": "p",
+    "left": "0px",
+    "top": "300px",
+    "width": "308px",
+    "height": "100px",
+    "textContent": "Portfolio",
+    "class": "navButton",
+    "ajax": "portfolio.php:middleBody:1;"
+  },
+  {
+    "id": "navLeftShare",
+    "tagName": "img",
+    "left": "1400px",
+    "top": "600px",
+    "width": "100px",
+    "height": "100px",
+    "src": "share.svg",
+    "tool-tip": "Share!"
+  },
+  {
+    "id": "",
+    "tagName": "input",
+    "left": "1200px",
+    "top": "0px",
+    "width": "308px",
+    "height": "100px",
+    "type": "text",
+    "placeholder": "Search Users",
+    "class": "mouse",
+    "event": "change",
+    "ajax": "searchUsers.php:userSought:1;",
+    "display": "userSought"
+  },
+  {
+    "id": "userSought",
+    "tagName": "select",
+    "left": "1200px",
+    "top": "100px",
+    "width": "308px",
+    "height": "100px",
+    "ajax": "getBio.php:middleBody:1",
+    "multiple": "true"
+  },
+  {
+    "id": "middlePageHeader",
+    "tagName": "div",
+    "left": "400px",
+    "top": "100px",
+    "width": "724px",
+    "height": "100px"
+  },
+  {
+    "id": "middleBody",
+    "tagName": "article",
+    "left": "400px",
+    "top": "200px",
+    "width": "724px",
+    "height": "620px"
+  },
+  {
+    "id": "navRightProfile",
+    "tagName": "p",
+    "left": "1200px",
+    "top": "200px",
+    "width": "308px",
+    "height": "100px",
+    "textContent": "Edit Profile",
+    "ajax": "profile_set.php:middleBody:1",
+    "class": "nav-right"
+  },
+  {
+    "id": "navRightWired",
+    "tagName": "p",
+    "left": "1200px",
+    "top": "300px",
+    "width": "308px",
+    "height": "100px",
+    "textContent": "Wired",
+    "ajax": "wired.php:middleBody.php:1",
+    "class": "nav-right"
+  },
+  {
+    "id": "navRightCTF",
+    "tagName": "p",
+    "left": "1200px",
+    "top": "400px",
+    "width": "308px",
+    "height": "100px",
+    "textContent": "Let's Play A Game",
+    "ajax": "chess.html",
+    "class": "redirect nav-right"
+  },
+  {
+    "id": "createConversation",
+    "tagName": "textarea",
+    "left": "1200px",
+    "top": "500px",
+    "width": "308px",
+    "height": "100px",
+    "placeholder": "Enter Your Remarks Here...",
+    "class": "conversation"
+  },
+  {
+    "id": "navRightConversationButton",
+    "tagName": "span",
+    "left": "1200px",
+    "top": "600px",
+    "width": "100px",
+    "height": "100px",
+    "form-class": "conversation",
+    "ajax": "comment.php",
+    "textContent": "Submit"
+  }
+]
