@@ -80,32 +80,55 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add the '+' and 'Custom' buttons
         addAttributeButtons(attributesContainer, attributesTable);
 
-        showAttributesBtn.addEventListener('click', () => {
-            const tagName = tagNameInput.value.trim().toLowerCase();
-            if (tagName) {
-                // Toggle the visibility of the attributes container
-                if (attributesContainer.style.display === 'none' || attributesContainer.style.display === '') {
-                    attributesContainer.style.display = 'block';
-                } else {
-                    attributesContainer.style.display = 'none';
-                }
-            } else {
-                alert('Please enter a tag name.');
-            }
-        });
+        // showAttributesBtn.addEventListener('click', () => {
+        //     const tagName = newElement;
+        //     console.log('Tag Name:', tagName);
+        //     if (tagName) {
+        //         // Bring the parent box to the top
+        //         bringToFront(newElement);
+            //     console.log('Tag Name:', tagName);
+            //     // Toggle the visibility of the attributes container
+            //     if (attributesContainer.style.display === 'none' || attributesContainer.style.display === '') {
+            //         attributesContainer.style.display = 'block';
+            //         attributesContainer.style.zIndex = 3000; // Ensure the attributes container is on top
+        
+            //         // Position the attributes container relative to the parent element
+            //         const rect = newElement.getBoundingClientRect();
+            //         attributesContainer.style.left = `${rect.right + 10}px`; // Position to the right of the element
+            //         attributesContainer.style.top = `${rect.top}px`; // Align vertically with the element
+            //     } else {
+            //         attributesContainer.style.display = 'none';
+            //     }
+            // } else {
+            //     alert('Please enter a tag name.');
+            // }
+        // });
+        
 
         gridContainer.appendChild(newElement);
-        newElement.addEventListener('mousedown', onDragStart);
-        resizeHandle.addEventListener('mousedown', onResizeStart);
+        newElement.addEventListener('mousedown', () => onDragStart);
+        newElement.addEventListener('click', () => bringToFront(newElement));
         resizeRightBtn.addEventListener('click', () => resizeElement(newElement, 'right'));
         resizeDownBtn.addEventListener('click', () => resizeElement(newElement, 'down'));
         resizeLeftBtn.addEventListener('click', () => resizeElement(newElement, 'left'));
         resizeUpBtn.addEventListener('click', () => resizeElement(newElement, 'up'));
     }
+    
+    function bringToFront(element) {
+        // Reset the zIndex of all elements
+        const allElements = document.querySelectorAll('*');
+        console.log('All Elements:', allElements);
+        allElements.forEach(el => {
+                el.style.zIndex = el.style.zindex - 1; // Reset to default
+        });
+        console.log('Element:', element);
+        // Set the clicked element to a high zIndex
+        element.style.zIndex = 2000;
+    }
 
     function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
         const row = document.createElement('tr');
-    
+
         const attributeCell = document.createElement('td');
         if (isCustom) {
             // Create a text input for custom attributes
@@ -118,11 +141,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create a dropdown for predefined attributes
             const attributeSelect = document.createElement('select');
             const attributesList = [
-                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 
-                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 
-                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 
-                'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 
-                'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 
+                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax',
+                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get',
+                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled',
+                'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes',
+                'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class',
                 'mouse', 'event', 'options'
             ];
             attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
@@ -130,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attributeCell.appendChild(attributeSelect);
         }
         row.appendChild(attributeCell);
-    
+
         const valueCell = document.createElement('td');
         const valueInput = document.createElement('input');
         valueInput.type = 'text';
@@ -138,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         valueInput.value = value;
         valueCell.appendChild(valueInput);
         row.appendChild(valueCell);
-    
+
         const lockCell = document.createElement('td');
         const toggleLockBtn = document.createElement('button');
         toggleLockBtn.textContent = '🔒';
@@ -154,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         lockCell.appendChild(toggleLockBtn);
         row.appendChild(lockCell);
-    
+
         const removeCell = document.createElement('td');
         const removeBtn = document.createElement('button');
         removeBtn.textContent = '🗑️';
@@ -163,26 +186,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         removeCell.appendChild(removeBtn);
         row.appendChild(removeCell);
-    
+
         attributesTable.querySelector('tbody').appendChild(row);
     }
-    
+
     function addAttributeButtons(attributesContainer, attributesTable) {
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('attribute-buttons');
-    
+
         // Add the '+' button
         const addAttributeBtn = document.createElement('button');
         addAttributeBtn.textContent = '+';
         addAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, false));
         buttonContainer.appendChild(addAttributeBtn);
-    
+
         // Add the 'Custom' button
         const addCustomAttributeBtn = document.createElement('button');
         addCustomAttributeBtn.textContent = 'Custom';
         addCustomAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, true));
         buttonContainer.appendChild(addCustomAttributeBtn);
-    
+
         attributesContainer.appendChild(buttonContainer);
     }
 
@@ -206,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
         const row = document.createElement('tr');
-    
+
         const attributeCell = document.createElement('td');
         if (isCustom) {
             // Create a text input for custom attributes
@@ -219,11 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create a dropdown for predefined attributes
             const attributeSelect = document.createElement('select');
             const attributesList = [
-                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 
-                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 
-                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'disabled', 
+                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax',
+                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get',
+                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'disabled',
                 'br', 'js', 'css', 'modal', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 'node',
-                'file-order', 'file-index', 'interval', 'mode', 'remove', 'display', 'headers', 'form-class', 
+                'file-order', 'file-index', 'interval', 'mode', 'remove', 'display', 'headers', 'form-class',
                 'mouse', 'event', 'options'
             ];
             attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
@@ -231,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attributeCell.appendChild(attributeSelect);
         }
         row.appendChild(attributeCell);
-    
+
         const valueCell = document.createElement('td');
         const valueInput = document.createElement('input');
         valueInput.type = 'text';
@@ -239,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         valueInput.value = value;
         valueCell.appendChild(valueInput);
         row.appendChild(valueCell);
-    
+
         const lockCell = document.createElement('td');
         const toggleLockBtn = document.createElement('button');
         toggleLockBtn.textContent = '🔒';
@@ -255,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         lockCell.appendChild(toggleLockBtn);
         row.appendChild(lockCell);
-    
+
         const removeCell = document.createElement('td');
         const removeBtn = document.createElement('button');
         removeBtn.textContent = '🗑️';
@@ -264,13 +287,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         removeCell.appendChild(removeBtn);
         row.appendChild(removeCell);
-    
+
         attributesTable.querySelector('tbody').appendChild(row);
     }
-    
+
     function addAttributeRow(attributesTable, isCustom = false, key = '', value = '') {
         const row = document.createElement('tr');
-    
+
         const attributeCell = document.createElement('td');
         if (isCustom) {
             // Create a text input for custom attributes
@@ -283,11 +306,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Create a dropdown for predefined attributes
             const attributeSelect = document.createElement('select');
             const attributesList = [
-                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax', 
-                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get', 
-                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled', 
-                'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes', 
-                'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class', 
+                'id', 'class', 'style', 'title', 'textContent', 'label', 'icon', 'sources', 'src', 'insert', 'ajax',
+                'ajax-limit', 'query', 'turn', 'callback', 'callback-class', 'modal', 'download', 'file', 'set', 'get',
+                'delete', 'x-toggle', 'directory', 'tool-tip', 'modal-tip', 'copy', 'clear-node', 'redirect', 'disabled',
+                'br', 'js', 'css', 'modala', 'tree-view', 'strict-json', 'plain-text', 'plain-html', 'delay', 'boxes',
+                'file-order', 'file-index', 'interval', 'mode', 'multiple', 'remove', 'display', 'headers', 'form-class',
                 'mouse', 'event', 'options'
             ];
             attributeSelect.innerHTML = attributesList.map(attr => `<option value="${attr}">${attr}</option>`).join('');
@@ -295,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
             attributeCell.appendChild(attributeSelect);
         }
         row.appendChild(attributeCell);
-    
+
         const valueCell = document.createElement('td');
         const valueInput = document.createElement('input');
         valueInput.type = 'text';
@@ -303,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         valueInput.value = value;
         valueCell.appendChild(valueInput);
         row.appendChild(valueCell);
-    
+
         const lockCell = document.createElement('td');
         const toggleLockBtn = document.createElement('button');
         toggleLockBtn.textContent = '🔒';
@@ -319,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         lockCell.appendChild(toggleLockBtn);
         row.appendChild(lockCell);
-    
+
         const removeCell = document.createElement('td');
         const removeBtn = document.createElement('button');
         removeBtn.textContent = '🗑️';
@@ -328,26 +351,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         removeCell.appendChild(removeBtn);
         row.appendChild(removeCell);
-    
+
         attributesTable.querySelector('tbody').appendChild(row);
     }
-    
+    let lastZIndex = 1; // Keep track of the last used zIndex
+
+    function bringToFront(element) {
+        // Reset the zIndex of all elements
+        const allElements = document.querySelectorAll('.draggable');
+        allElements.forEach(el => {
+            if (el !== element) {
+                el.style.zIndex = ''; // Reset to default
+            }
+        });
+
+        // Set the clicked element to a high zIndex
+        element.style.zIndex = 2000;
+    }
+
     function addAttributeButtons(attributesContainer, attributesTable) {
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('attribute-buttons');
-    
+
         // Add the '+' button
         const addAttributeBtn = document.createElement('button');
         addAttributeBtn.textContent = '+';
         addAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, false));
         buttonContainer.appendChild(addAttributeBtn);
-    
+
         // Add the 'Custom' button
         const addCustomAttributeBtn = document.createElement('button');
         addCustomAttributeBtn.textContent = 'Custom';
         addCustomAttributeBtn.addEventListener('click', () => addAttributeRow(attributesTable, true));
         buttonContainer.appendChild(addCustomAttributeBtn);
-    
+
         attributesContainer.appendChild(buttonContainer);
     }
 
