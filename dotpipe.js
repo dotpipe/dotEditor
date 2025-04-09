@@ -72,6 +72,8 @@
   **** go on if there is no input to replace them.
   */
 
+  let PAGE_NONCE = '';
+
   document.addEventListener("DOMContentLoaded", function () {
     try {
         if (document.body != null && JSON.parse(document.body.textContent)) {
@@ -100,9 +102,15 @@
         });
         PAGE_NONCE = nonce
         var meta = document.createElement("meta");
-        meta.content = `script-src 'self' nonce-${PAGE_NONCE}; img-src 'self'; style-src 'self' nonce-${PAGE_NONCE}; child-src 'none'; object-src 'none'`;
+        meta.content = `script-src 'self' 'nonce-${PAGE_NONCE}'; 
+                style-src 'self' 'nonce-${PAGE_NONCE}'; 
+                style-src-attr 'nonce-${PAGE_NONCE}';
+                img-src 'self'; 
+                child-src 'none'; 
+                object-src 'none'`;
         meta.httpEquiv = "Content-Security-Policy";
         document.head.appendChild(meta);
+        addNoncesToStyledElements(PAGE_NONCE);
     });
 });
 
@@ -231,6 +239,52 @@ function generateNonce() {
     return sha256(randomBytes.join('')).then(hash => hash.slice(0, 16));
 }
 
+/**
+ * Adds nonces to all elements with style attributes
+ * @param {string} nonce - The page nonce value
+ * @param {HTMLElement} [root=document.body] - Root element to start searching from
+ */
+function addNoncesToStyledElements(nonce, root = document.body) {
+    // Get all elements with style attribute
+    const elements = root.querySelectorAll('[style]');
+    
+    elements.forEach(element => {
+        // Skip if element already has a nonce
+        if (!element.hasAttribute('nonce')) {
+            element.setAttribute('nonce', nonce);
+        }
+    });
+
+    // Watch for new elements being added
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Check the added element
+                    if (node.hasAttribute('style') && !node.hasAttribute('nonce')) {
+                        node.setAttribute('nonce', nonce);
+                    }
+                    // Check children of added element
+                    const childrenWithStyle = node.querySelectorAll('[style]');
+                    childrenWithStyle.forEach(child => {
+                        if (!child.hasAttribute('nonce')) {
+                            child.setAttribute('nonce', nonce);
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    // Configure the observer
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    return observer; // Return observer in case you need to disconnect it later
+}
+
 function copyContentById(id) {
     // Get the element with the specified ID
     var element = document.getElementById(id);
@@ -272,6 +326,7 @@ function modalCard(filename, x_center = false, y_center = false, duration = -1, 
     copied.style.textAlign = "center";
     copied.style.backgroundColor = "white";
     copied.style.position = "absolute";
+    copied.setAttribute('nonce', PAGE_NONCE); // Add nonce for inline styles
     var x_pos = 0;
     if (typeof x_center === 'boolean' && x_center) x_pos = (document.body.offsetWidth - copied.style.width) / 2;
     else if (typeof x_center === 'boolean' && !x_center) x_pos = 0;
@@ -302,6 +357,7 @@ function textCard(text, id = "", classes = "", x_center = false, y_center = fals
     copied.style.textAlign = "center";
     copied.style.backgroundColor = "white";
     copied.style.position = "absolute";
+    copied.setAttribute('nonce', PAGE_NONCE); // Add nonce for inline styles
     var x_pos = 0;
     if (typeof x_center === 'boolean' && x_center) x_pos = (document.body.offsetWidth - copied.style.width) / 2;
     else if (typeof x_center === 'boolean' && !x_center) x_pos = 0;

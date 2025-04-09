@@ -223,15 +223,6 @@ function sha256(message) {
             .join('');
     });
 }
-function sha256(message) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(message);
-    return crypto.subtle.digest('SHA-256', data).then(hash => {
-        return Array.from(new Uint8Array(hash))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
-    });
-}
 
 // Usage example to generate a nonce
 function generateNonce() {
@@ -602,7 +593,6 @@ function modala(value, tempTag, root, id) {
         if (value["placeholder"] !== undefined) temp.setAttribute("placeholder", value["placeholder"]);
         if (value["value"] !== undefined) temp.value = value["value"];
     }
-
     Object.entries(value).forEach((nest) => {
         const [k, v] = nest;
         if (k.toLowerCase() == "header");
@@ -797,10 +787,6 @@ function modala(value, tempTag, root, id) {
     });
     tempTag.appendChild(temp);
     domContentLoad();
-
-    // Save the grid data to the database
-    // saveGridData(value);
-
     return tempTag;
 }
 
@@ -1168,7 +1154,7 @@ function pipes(elem, stop = false) {
     }
     if (elem.hasAttribute("display") && elem.getAttribute("display")) {
         var optsArray = elem.getAttribute("display").split(";");
-        optsArray.forEach((e, f) => {
+        optsArray.forEach((e) => {
             var x = document.getElementById(e);
             if (x !== null && x.style.display !== "none")
                 x.style.display = "none";
@@ -1326,8 +1312,17 @@ function pipes(elem, stop = false) {
             var clone = elem.cloneNode(true);
             clone.setAttribute("ajax", file);
             clone.setAttribute("insert", target);
-            if (limit) {
-                clone.setAttribute("boxes", limit);
+            if (document.getElementById(target) == null) {
+                console.error("Target element not found:", target);
+                return;
+            }
+            else if (document.getElementById(target).childElementCount >= limit) {
+                if (document.getElementById(target).classList.contains("modala-multi-first")) {
+                    document.getElementById(target).removeChild(document.getElementById(target).firstChild.remove);
+                }
+                else if (document.getElementById(target).classList.contains("modala-multi-last")) {
+                    document.getElementById(target).removeChild(document.getElementById(target).lastChild.remove);
+                }
             }
             navigate(clone, headers, query, formclass);
         });
