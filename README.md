@@ -1,11 +1,10 @@
 # HTML Editor
 
 ## Overview
-This project is an AI-powered HTML editor that features a snap-to-grid functionality, allowing users to create and manipulate HTML elements easily and intuitively. The editor integrates AI services to provide suggestions and auto-completion features, enhancing the user experience.
+This project is an HTML editor that features a snap-to-grid functionality, allowing users to create and manipulate HTML elements easily and intuitively.
 
 ## Features
 - **Snap-to-Grid Functionality**: Align elements to a customizable grid for precise placement.
-- **AI Integration**: Get suggestions and auto-completions for HTML elements based on user input.
 - **User-Friendly Interface**: A clean and intuitive interface that includes a sidebar for easy access to tools and options.
 
 ## Project Structure
