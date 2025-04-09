@@ -7,32 +7,6 @@ This project is an HTML editor that features a snap-to-grid functionality, allow
 - **Snap-to-Grid Functionality**: Align elements to a customizable grid for precise placement.
 - **User-Friendly Interface**: A clean and intuitive interface that includes a sidebar for easy access to tools and options.
 
-## Project Structure
-```
-dotEditor
-├── src
-│   ├── components
-│   │   ├── Editor.tsx
-│   │   ├── Grid.tsx
-│   │   └── Sidebar.tsx
-│   ├── hooks
-│   │   └── useSnapToGrid.ts
-│   ├── services
-│   │   └── aiService.ts
-│   ├── styles
-│   │   ├── editor.css
-│   │   └── grid.css
-│   ├── utils
-│   │   └── helpers.ts
-│   └── index.tsx
-├── public
-│   ├── index.html
-│   └── manifest.json
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
 ## Installation
 1. Clone the repository:
    ```
