@@ -1,4 +1,4 @@
-# AI-Powered HTML Editor
+# HTML Editor
 
 ## Overview
 This project is an AI-powered HTML editor that features a snap-to-grid functionality, allowing users to create and manipulate HTML elements easily and intuitively. The editor integrates AI services to provide suggestions and auto-completion features, enhancing the user experience.
@@ -10,7 +10,7 @@ This project is an AI-powered HTML editor that features a snap-to-grid functiona
 
 ## Project Structure
 ```
-ai-html-editor
+dotEditor
 ├── src
 │   ├── components
 │   │   ├── Editor.tsx
@@ -41,7 +41,7 @@ ai-html-editor
    ```
 2. Navigate to the project directory:
    ```
-   cd ai-html-editor
+   cd doteditor
    ```
 3. Install the dependencies:
    ```
